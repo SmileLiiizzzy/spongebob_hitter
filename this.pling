@@ -1,0 +1,14 @@
+title = "Spongebob Hitter"
+vendorId = "com.finalproject"
+resources = [
+	"images"
+]
+depends = [
+	"cape",
+	"cave",
+	"motion"
+]
+preFilters += "@motion"
+compilerOptions = {
+	"html5.readableCode": "true"
+}
