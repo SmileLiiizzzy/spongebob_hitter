@@ -2,33 +2,36 @@ class is SpriteSceneWithEntities imports cape imports cave imports motion:
 
 var gameBackground as BackgroundEntity
 var spongebob as SpongebobEntity
-var foodEntities as vector<FoodEntity>
+var sponge as SpongeEntity
+var enemyEntities as vector<EnemyEntity>
+var spongeEntities as vector<SpongeEntity>
 var quitButton as TextureSprite
-var scoreSprite as TextSprite
+var lifeSprite as TextSprite
 var audioManager as AudioManager
 var stream as AudioStream
 var height as double
 var width as double
 var timer as int
-var score as int
+var life as int
 
 func initialize override
 {
 	base.initialize()
 	timer = 0
-	score = 0
+	life = 3
 	height = getReferenceHeight()
 	width = getReferenceWidth()
 	gameBackground = new BackgroundEntity()
 	spongebob = new SpongebobEntity()
 	addEntity(gameBackground)
 	addEntity(spongebob)
-	foodEntities = new vector<FoodEntity>
+	enemyEntities = new vector<EnemyEntity>
+	spongeEntities = new vector<SpongeEntity>
 	quitButton = addTextureSpriteForSize(createTextureForImageResource("quitbutton"), 0.2 * width, 0.1 * height)
-	var txtProp = TextProperties.forText("Score: ")
+	var txtProp = TextProperties.forText("Life:")
 	txtProp.setFontSizeRelative(20.0)
-	scoreSprite = addTextSprite(txtProp)
-	scoreSprite.move(0.9 * width, 0.0)
+	lifeSprite = addTextSprite(txtProp)
+	lifeSprite.move(0.9 * width, 0.0)
 	audioManager = AudioManager.forApplication(context)
 	if(audioManager != null) {
 		stream = audioManager.getStreamForResource("bmusic")
@@ -37,10 +40,31 @@ func initialize override
 	onTimeToPlayStream()
 }
 
-func removeFoodEntity(f as FoodEntity) as void
+func getContext as ApplicationContext
 {
-	removeEntity(f)
-	Vector.removeValue(foodEntities, f)
+	return context
+}
+
+func removeEnemyEntity(m as EnemyEntity) as void
+{
+	removeEntity(m)
+	Vector.removeValue(enemyEntities, m)
+}
+
+func removeSpongeEntity(s as SpongeEntity) as void
+{
+	removeEntity(s)
+	Vector.removeValue(spongeEntities, s)
+}
+
+func getEnemyEntities as vector<EnemyEntity>
+{
+	return enemyEntities
+}
+
+func getSpongeEntities as vector<SpongeEntity>
+{
+	return spongeEntities
 }
 
 func getSpongebob as SpongebobEntity
@@ -48,30 +72,40 @@ func getSpongebob as SpongebobEntity
 	return spongebob
 }
 
+func subtractLife(n as int)
+{
+	life -= n
+}
+
+func getSponge as SpongeEntity
+{
+	return sponge
+}
+
+func spongeBullet
+{
+	var sponge = new SpongeEntity()
+	addEntity(sponge)
+	spongeEntities += sponge
+}
+
 func mainMenu
 {
 	pushScene(new MainScene())
-}
-
-func getScore as int
-{
-	return score
-}
-
-func addPoints(n as int)
-{
-	score += n
 }
 
 func tick(gameTime as TimeValue, delta as double) override
 {
 	base.tick(gameTime, delta)
 	timer++
-	scoreSprite.setText(String.append("Score: ", score))
+	lifeSprite.setText(String.append("Life: ", life))
 	if((timer % 500) == 0) {
-		var food = new FoodEntity()
-		addEntity(food)
-		foodEntities += food
+		var enemy = new EnemyEntity()
+		addEntity(enemy)
+		enemyEntities += enemy
+	}
+	if(life == 0) {
+		pushScene(new GameOverScene())
 	}
 }
 

@@ -1,0 +1,64 @@
+class is SpriteSceneWithEntities imports cape imports cave imports motion:
+
+var backgroundSprite as TextureSprite
+var gameOverSprite as TextureSprite
+var backButton as TextureSprite
+var audioManager as AudioManager
+var stream as AudioStream
+var height as double
+var width as double
+
+func initialize override
+{
+	base.initialize()
+	height = getReferenceHeight()
+	width = getReferenceWidth()
+	backgroundSprite = addTextureSpriteForSize(createTextureForImageResource("background"), width, height)
+	gameOverSprite = addTextureSpriteForSize(createTextureForImageResource("gameover"), 0.45 * width, 0.5 * height)
+	audioManager = AudioManager.forApplication(context)
+	if(audioManager != null) {
+		stream = audioManager.getStreamForResource("gameover")
+	}
+	backButton = addTextureSpriteForSize(createTextureForImageResource("backbutton"), 0.2 * width, 0.1 * height)
+	backButton.move(0.75 * width, 0.9 * height)
+	gameOverSprite.move(0.25 * width, 0.35 * height)
+	onTimeToPlayStream()
+}
+
+func cleanup override
+{
+	removeAllSprites()
+	stopStream()
+}
+
+func stopStream
+{
+	if(stream != null) {
+		stream.stop()
+	}
+}
+
+func mainScene
+{
+	pushScene(new MainScene())
+}
+
+func onPointerEvent(event as PointerEvent) override
+{
+	base.onPointerEvent(event)
+	if(event.isConsumed) {
+		return
+	}
+	if(event.action == PointerEvent.DOWN) {
+		if(event.isInside(backButton.getX(), backButton.getY(), backButton.getWidth(), backButton.getHeight())) {
+			mainScene()
+		}
+	}
+}
+func onTimeToPlayStream
+{
+	if(stream != null) {
+		stream.play()
+		stream.setLooping(true)
+	}
+}

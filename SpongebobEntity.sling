@@ -1,23 +1,30 @@
-class is SpriteEntity is KeyListener imports cape imports cave imports motion:
+class is SpriteEntity is KeyListener is PointerListener imports cape imports cave imports motion:
 
 var spongebobSprite as TextureSprite
+var hitScene as HitScene
 var spongeX as double
 var spongeY as double
+var ptX as double
+var ptY as double
 var height as double
 var width as double
 var isKeyUp = false
 var isKeyRight = false
 var isKeyDown = false
 var isKeyLeft = false
+var isClick = false
+var timer as int
 
 func createSprite override as Sprite
 {
+	hitScene = getScene() as HitScene
+	isClick = false
 	var spongebob = scene.createTextureForImageResource("spongebob")
 	height = layer.getReferenceHeight()
 	width = layer.getReferenceWidth()
 	spongebobSprite = SpriteUtil.addTextureSpriteForSize(scene, layer, spongebob, 0.1 * width, 0.12 * height)
 	spongebobSprite.move(0.0, height)
-	return(spongebobSprite)
+	return spongebobSprite
 }
 
 func onKeyEvent(event as KeyEvent)
@@ -26,19 +33,19 @@ func onKeyEvent(event as KeyEvent)
 	if(event.getAction() == 1) {
 		if(String.equalsIgnoreCase(str, "w")) {
 			isKeyUp = true
-			PRINT(isKeyUp)
+			hitScene.spongeBullet()
 		}
 		else if(String.equalsIgnoreCase(str, "d")) {
 			isKeyRight = true
-			PRINT(isKeyRight)
+			hitScene.spongeBullet()
 		}
 		else if(String.equalsIgnoreCase(str, "s")) {
 			isKeyDown = true
-			PRINT(isKeyDown)
+			hitScene.spongeBullet()
 		}
 		else if(String.equalsIgnoreCase(str, "a")) {
 			isKeyLeft = true
-			PRINT(isKeyLeft)
+			hitScene.spongeBullet()
 		}
 		else {
 			PRINT("Unhandled key event: `" .. event.getStringValue() .. "'")
@@ -52,11 +59,36 @@ func onKeyEvent(event as KeyEvent)
 	}
 }
 
+func onPointerEvent(event as PointerEvent) as bool
+{
+	if(event.isConsumed) {
+		return false
+	}
+	if(event.action == PointerEvent.DOWN) {
+		isClick = true
+	}
+	if(event.action == PointerEvent.UP) {
+		isClick = false
+	}
+	ptX = event.getX()
+	ptY = event.getY()
+	return false
+}
+
 func tick(gameTime as TimeValue, delta as double) override
 {
 	base.tick(gameTime, delta)
 	spongeX = sprite.getX()
 	spongeY = sprite.getY()
+	timer++
+	if(isClick) {
+		spongeX -= (spongeX - (ptX + 0.5 * spongebobSprite.getWidth())) / 20
+		spongeY -= (spongeY - (ptY + 0.5 * spongebobSprite.getHeight())) / 20
+		spongebobSprite.move(spongeX, spongeY)
+		if((timer % 100) == 0) {
+			hitScene.spongeBullet()
+		}
+	}
 	if(spongeX < 0.0) {
 		sprite.move(0.0, spongeY)
 	}

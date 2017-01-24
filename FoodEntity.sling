@@ -1,8 +1,7 @@
 class is SpriteEntity imports cape imports cave imports motion:
 
 var foodSprite as TextureSprite
-var gameScene as FoodScene
-var spongebob as SpongebobEntity
+var foodScene as FoodScene
 var height as double
 var width as double
 var speed as double
@@ -13,6 +12,9 @@ var score as int
 
 func createSprite override as Sprite
 {
+	foodScene = getScene() as FoodScene
+	height = layer.getReferenceHeight()
+	width = layer.getReferenceWidth()
 	var random = new Random()
 	var food1 = scene.createTextureForImageResource("kelpshake")
 	var food2 = scene.createTextureForImageResource("donut")
@@ -20,22 +22,18 @@ func createSprite override as Sprite
 	fX = 0.0
 	fY = 0.0
 	score = 0
-	height = layer.getReferenceHeight()
-	width = layer.getReferenceWidth()
-	gameScene = getScene() as FoodScene
-	spongebob = gameScene.getSpongebob()
 	food = random.nextInt(1,4)
 	if(food == 1) {
-		foodSprite = SpriteUtil.addTextureSpriteForSize(scene, layer, food1, 0.03 * width, 0.05 * height)
-		speed = 0.01
+		foodSprite = SpriteUtil.addTextureSpriteForSize(scene, layer, food1, 0.05 * width, 0.07 * height)
+		speed = 0.3
 	}
 	else if(food == 2) {
 		foodSprite = SpriteUtil.addTextureSpriteForSize(scene, layer, food2, 0.04 * width, 0.05 * height)
-		speed = 0.1
+		speed = 0.4
 	}
 	else if(food == 3) {
 		foodSprite = SpriteUtil.addTextureSpriteForSize(scene, layer, food3, 0.05 * width, 0.05 * height)
-		speed = 0.05
+		speed = 0.5
 	}
 	foodSprite.move(width, (height - foodSprite.getHeight()) * random.nextDouble())
 	return foodSprite
@@ -67,16 +65,13 @@ func tick(gameTime as TimeValue, delta as double) override
 	base.tick(gameTime, delta)
 	fX = foodSprite.getX()
 	fY = foodSprite.getY()
-	spongebob = gameScene.getSpongebob()
-	if(isCollide(spongebob, foodSprite)) {
-		score++
+	if(isCollide(foodScene.getSpongebob(), foodSprite)) {
+		foodScene.addPoints(1)
 		layer.removeSprite(foodSprite)
-		PRINT("LSFJALSDJFLSDFLKAS")
-		PRINT(score)
 	}
 	foodSprite.move(fX - delta * speed, fY)
 	if(fX < 0.0) {
-		gameScene.removeFoodEntity(this)
+		foodScene.removeFoodEntity(this)
 	}
 }
 

@@ -1,4 +1,4 @@
-class is SpriteEntity imports motion imports cape:
+class is SpriteEntity imports cape imports motion:
 
 var bgSprite as Sprite
 var height as double
@@ -13,7 +13,7 @@ func createSprite override as Sprite
 	bgSprite = SpriteUtil.addTextureSpriteForSize(scene, layer, gameBackground, width, height)
 	background.move(0.0, 0.0)
 	bgSprite.move(width, 0.0)
-	return(bgSprite)
+	return(background)
 }
 
 func tick(gameTime as TimeValue, delta as double) override
@@ -24,6 +24,7 @@ func tick(gameTime as TimeValue, delta as double) override
 		bgX = 0
 	}
 	sprite.move(bgX, 0.0)
+	PRINT("JIO")
 	bgSprite.move(width + bgX, 0.0)
 }
 

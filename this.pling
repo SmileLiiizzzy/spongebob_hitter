@@ -1,7 +1,8 @@
 title = "Spongebob Hitter"
 vendorId = "com.finalproject"
 resources = [
-	"images"
+	"images",
+	"audio"
 ]
 depends = [
 	"cape",

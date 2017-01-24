@@ -1,0 +1,39 @@
+class is SpriteSceneWithEntities imports cape imports cave imports motion:
+
+var helpSprite as TextureSprite
+var backButton as TextureSprite
+var height as double
+var width as double
+
+func initialize override
+{
+	base.initialize()
+	height = getReferenceHeight()
+	width = getReferenceWidth()
+	helpSprite = addTextureSpriteForSize(createTextureForImageResource("help"), width, height)
+	backButton = addTextureSpriteForSize(createTextureForImageResource("backbutton"), 0.2 * width, 0.1 * height)
+	backButton.move(0.75 * width, 0.9 * height)
+}
+
+func mainScene
+{
+	pushScene(new MainScene())
+}
+
+func onPointerEvent(event as PointerEvent) override
+{
+	base.onPointerEvent(event)
+	if(event.isConsumed) {
+		return
+	}
+	if(event.action == PointerEvent.DOWN) {
+		if(event.isInside(backButton.getX(), backButton.getY(), backButton.getWidth(), backButton.getHeight())) {
+			mainScene()
+		}
+	}
+}
+
+func cleanup override
+{
+	removeAllSprites()
+}

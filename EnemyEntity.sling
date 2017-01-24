@@ -1,6 +1,10 @@
 class is SpriteEntity imports cape imports cave imports motion:
 
 var enemySprite as TextureSprite
+var gameScene as HitScene
+var sponge as SpongeEntity
+var audioManager as AudioManager
+var clip as AudioClip
 var height as double
 var width as double
 var speed as double
@@ -10,27 +14,55 @@ var monster as int
 
 func createSprite override as Sprite
 {
+	gameScene = getScene() as HitScene
+	audioManager = AudioManager.forApplication(gameScene.getContext())
+	if(audioManager != null) {
+		clip = audioManager.getClipForResource("clip")
+	}
+	onTimeToPlayClip()
 	var random = new Random()
 	var enemy1 = scene.createTextureForImageResource("dirtybubble")
 	var enemy2 = scene.createTextureForImageResource("plankton")
 	var enemy3 = scene.createTextureForImageResource("manray")
 	height = layer.getReferenceHeight()
 	width = layer.getReferenceWidth()
+	sponge = gameScene.getSponge()
 	monster = random.nextInt(1, 4)
 	if(monster == 1) {
 		enemySprite = SpriteUtil.addTextureSpriteForSize(scene, layer, enemy1, 0.1 * width, 0.1 * height)
-		speed = 0.01
+		speed = 0.3
 	}
 	else if(monster == 2) {
 		enemySprite = SpriteUtil.addTextureSpriteForSize(scene, layer, enemy2, 0.1 * width, 0.2 * height)
-		speed = 0.1
+		speed = 0.4
 	}
 	else if(monster == 3) {
 		enemySprite = SpriteUtil.addTextureSpriteForSize(scene, layer, enemy3, 0.1 * width, 0.1 * height)
-		speed = 0.05
+		speed = 0.5
 	}
 	enemySprite.move(width, (height - enemySprite.getHeight()) * random.nextDouble())
 	return enemySprite
+}
+
+func isCollide(spriteA as Sprite, spriteB as Sprite) static as bool
+{
+	var collide = false
+	var fHeight as double
+	var fWidth as double
+	var totalA as double
+	var totalB as double
+	var foodX as double
+	var foodY as double
+	fHeight = spriteA.getHeight() * 0.5
+	fWidth = spriteA.getWidth() * 0.5
+	totalA = fHeight + fWidth
+	foodX = spriteA.getX() - spriteB.getX()
+	foodY = spriteA.getY() - spriteB.getY()
+	totalB = Math.sqrt(foodX * foodX + foodY * foodY)
+	if(totalB < totalA) {
+		collide = true
+	}
+	return(collide)
 }
 
 func tick(gameTime as TimeValue, delta as double) override
@@ -38,10 +70,32 @@ func tick(gameTime as TimeValue, delta as double) override
 	base.tick(gameTime, delta)
 	eX = enemySprite.getX()
 	eY = enemySprite.getY()
+	sponge = gameScene.getSponge()
+	foreach(s in gameScene.getSpongeEntities()) {
+		if(s != null) {
+			if(sprite != null) {
+				if(isCollide(s, sprite)) {
+					gameScene.removeEnemyEntity(this)
+				}
+			}
+		}
+	}
 	enemySprite.move(eX - delta * speed, eY)
+	if(eX < 0.0) {
+		gameScene.removeEnemyEntity(this)
+		gameScene.subtractLife(1)
+	}
+}
+
+func onTimeToPlayClip
+{
+	if(clip !=null) {
+		clip.play()
+	}
 }
 
 func cleanup override
 {
 	layer.removeSprite(enemySprite)
+	gameScene.removeEntity(sponge)
 }
