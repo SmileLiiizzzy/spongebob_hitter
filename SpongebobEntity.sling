@@ -1,0 +1,54 @@
+class is SpriteEntity is KeyListener imports cape imports cave imports motion:
+
+var spongebobSprite as TextureSprite
+var spongeX as double
+var spongeY as double
+var height as double
+var width as double
+var isKeyUp = false
+var isKeyDown = false
+
+func createSprite override as Sprite
+{
+	var spongebob = scene.createTextureForImageResource("spongebob")
+	height = layer.getReferenceHeight()
+	width = layer.getReferenceWidth()
+	spongebobSprite = SpriteUtil.addTextureSpriteForSize(scene, layer, spongebob, 0.1 * width, 0.12 * height)
+	spongebobSprite.move(0.0, 0.9 * height)
+	return spongebobSprite
+}
+
+func onKeyEvent(event as KeyEvent)
+{
+	if(event.isKey(KeyEvent.KEY_UP)) {
+		isKeyUp = true
+	}
+	else if(event.isKey(KeyEvent.KEY_DOWN)) {
+		isKeyDown = true
+	}
+	if(event.getAction() == 2) {
+		isKeyUp = false
+		isKeyDown = false
+	}
+	else {
+		PRINT("Unhandled key event: `" .. event.getStringValue() .. "'")
+	}
+}
+
+func tick(gameTime as TimeValue, delta as double) override
+{
+	base.tick(gameTime, delta)
+	spongeX = spongebobSprite.getX()
+	spongeY = spongebobSprite.getY()
+	if(isKeyUp) {
+		spongebobSprite.move(spongeX, spongeY - height * 0.002)
+	}
+	if(isKeyDown) {
+		spongebobSprite.move(spongeX, spongeY + height * 0.002)
+	}
+}
+
+func cleanup override
+{
+	layer.removeSprite(spongebobSprite)
+}

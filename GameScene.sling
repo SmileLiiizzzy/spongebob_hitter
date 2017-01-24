@@ -1,6 +1,7 @@
 class is SpriteSceneWithEntities imports cape imports cave imports motion:
 
 var gameBackground as GameBackgroundEntity
+var spongebob as SpongebobEntity
 var quitButton as TextureSprite
 var height as double
 var width as double
@@ -11,9 +12,11 @@ func initialize override
 	height = getReferenceHeight()
 	width = getReferenceWidth()
 	gameBackground = new GameBackgroundEntity()
+	spongebob = new SpongebobEntity()
 	addEntity(gameBackground)
+	addEntity(spongebob)
 	quitButton = addTextureSpriteForSize(createTextureForImageResource("quitbutton"), 0.2 * width, 0.1 * height)
-	quitButton.move(0.0, 0.9 * height)
+	quitButton.move(0.95 * width - quitButton.getWidth(), 0.9 * height)
 }
 
 func cleanup override

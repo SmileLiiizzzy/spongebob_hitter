@@ -18,11 +18,6 @@ func initialize override
 	helpButton.move(0.2 * width, 0.65 * height)
 }
 
-func cleanup override
-{
-	removeAllSprites()
-}
-
 func startGame
 {
 	pushScene(new GameScene())
@@ -39,4 +34,9 @@ func onPointerEvent(event as PointerEvent) override
 			startGame()
 		}
 	}
+}
+
+func cleanup override
+{
+	removeAllSprites()
 }
