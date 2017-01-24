@@ -1,0 +1,22 @@
+class is SpriteSceneWithEntities imports cape imports cave imports motion:
+
+var gameBackground as GameBackgroundEntity
+var quitButton as TextureSprite
+var height as double
+var width as double
+
+func initialize override
+{
+	base.initialize()
+	height = getReferenceHeight()
+	width = getReferenceWidth()
+	gameBackground = new GameBackgroundEntity()
+	addEntity(gameBackground)
+	quitButton = addTextureSpriteForSize(createTextureForImageResource("quitbutton"), 0.2 * width, 0.1 * height)
+	quitButton.move(0.0, 0.9 * height)
+}
+
+func cleanup override
+{
+	removeAllSprites()
+}

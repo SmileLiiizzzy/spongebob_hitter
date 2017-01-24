@@ -1,0 +1,42 @@
+class is SpriteSceneWithEntities imports cape imports cave imports motion #mainScene:
+
+var backgroundSprite as TextureSprite
+var playButton as TextureSprite
+var helpButton as TextureSprite
+var height as double
+var width as double
+
+func initialize override
+{
+	base.initialize()
+	height = getReferenceHeight()
+	width = getReferenceWidth()
+	backgroundSprite = addTextureSpriteForSize(createTextureForImageResource("background"), width, height)
+	playButton = addTextureSpriteForSize(createTextureForImageResource("playbutton"), 0.25 * width, 0.1 * height)
+	helpButton = addTextureSpriteForSize(createTextureForImageResource("helpbutton"), 0.25 * width, 0.1 * height)
+	playButton.move(0.2 * width, 0.5 * height)
+	helpButton.move(0.2 * width, 0.65 * height)
+}
+
+func cleanup override
+{
+	removeAllSprites()
+}
+
+func startGame
+{
+	pushScene(new GameScene())
+}
+
+func onPointerEvent(event as PointerEvent) override
+{
+	base.onPointerEvent(event)
+	if(event.isConsumed) {
+		return
+	}
+	if(event.action == PointerEvent.DOWN) {
+		if(event.isInside(playButton.getX(), playButton.getY(), playButton.getWidth(), playButton.getHeight())) {
+			startGame()
+		}
+	}
+}
