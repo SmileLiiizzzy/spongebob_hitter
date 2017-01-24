@@ -31,7 +31,7 @@ func initialize override
 	var txtProp = TextProperties.forText("Life:")
 	txtProp.setFontSizeRelative(20.0)
 	lifeSprite = addTextSprite(txtProp)
-	lifeSprite.move(0.9 * width, 0.0)
+	lifeSprite.move(0.75 * width, 0.0)
 	audioManager = AudioManager.forApplication(context)
 	if(audioManager != null) {
 		stream = audioManager.getStreamForResource("bmusic")

@@ -28,7 +28,7 @@ func initialize override
 	var txtProp = TextProperties.forText("Score: ")
 	txtProp.setFontSizeRelative(20.0)
 	scoreSprite = addTextSprite(txtProp)
-	scoreSprite.move(0.9 * width, 0.0)
+	scoreSprite.move(0.8 * width, 0.0)
 	audioManager = AudioManager.forApplication(context)
 	if(audioManager != null) {
 		stream = audioManager.getStreamForResource("bmusic")
