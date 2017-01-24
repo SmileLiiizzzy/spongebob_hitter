@@ -1,0 +1,64 @@
+class is SpriteSceneWithEntities imports cape imports cave imports motion:
+
+var gameBackground as GameBackgroundEntity
+var spongebob as SpongebobEntity
+var enemyEntities as vector<EnemyEntity>
+var foodEntities as vector<FoodEntity>
+var quitButton as TextureSprite
+var height as double
+var width as double
+var timer as int
+
+func initialize override
+{
+	base.initialize()
+	timer = 0
+	height = getReferenceHeight()
+	width = getReferenceWidth()
+	gameBackground = new GameBackgroundEntity()
+	spongebob = new SpongebobEntity()
+	addEntity(gameBackground)
+	addEntity(spongebob)
+	foodEntities = new vector<FoodEntity>
+	enemyEntities = new vector<EnemyEntity>
+	quitButton = addTextureSpriteForSize(createTextureForImageResource("quitbutton"), 0.2 * width, 0.1 * height)
+	quitButton.move(0.95 * width - quitButton.getWidth(), 0.9 * height)
+}
+
+func removeFoodEntity(f as SpriteEntity) as void
+{
+	removeEntity(f)
+	Vector.clear(foodEntities)
+}
+
+func removeEnemyEntity(m as SpriteEntity) as void
+{
+	removeEntity(m)
+	Vector.clear(enemyEntities)
+}
+
+func getSpongebob as SpongebobEntity
+{
+	return spongebob
+}
+
+func tick(gameTime as TimeValue, delta as double) override
+{
+	base.tick(gameTime, delta)
+	timer++
+	if((timer % 1000) == 0) {
+		var food = new FoodEntity()
+		addEntity(food)
+		foodEntities += food
+	}
+	if((timer % 1500) == 0) {
+		var enemy = new EnemyEntity()
+		addEntity(enemy)
+		enemyEntities += enemy
+	}
+}
+
+func cleanup override
+{
+	removeAllSprites()
+}

@@ -1,7 +1,7 @@
 class is SpriteEntity imports cape imports cave imports motion:
 
 var foodSprite as TextureSprite
-var gameScene as GameScene
+var gameScene as FoodScene
 var spongebob as SpongebobEntity
 var height as double
 var width as double
@@ -22,7 +22,7 @@ func createSprite override as Sprite
 	score = 0
 	height = layer.getReferenceHeight()
 	width = layer.getReferenceWidth()
-	gameScene = getScene() as GameScene
+	gameScene = getScene() as FoodScene
 	spongebob = gameScene.getSpongebob()
 	food = random.nextInt(1,4)
 	if(food == 1) {

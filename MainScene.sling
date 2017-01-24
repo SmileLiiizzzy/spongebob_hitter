@@ -1,7 +1,8 @@
 class is SpriteSceneWithEntities imports cape imports cave imports motion #mainScene:
 
 var backgroundSprite as TextureSprite
-var playButton as TextureSprite
+var foodButton as TextureSprite
+var hitButton as TextureSprite
 var helpButton as TextureSprite
 var height as double
 var width as double
@@ -12,16 +13,23 @@ func initialize override
 	height = getReferenceHeight()
 	width = getReferenceWidth()
 	backgroundSprite = addTextureSpriteForSize(createTextureForImageResource("background"), width, height)
-	playButton = addTextureSpriteForSize(createTextureForImageResource("playbutton"), 0.25 * width, 0.1 * height)
+	foodButton = addTextureSpriteForSize(createTextureForImageResource("foodbutton"), 0.25 * width, 0.1 * height)
+	hitButton = addTextureSpriteForSize(createTextureForImageResource("hitbutton"), 0.25 * width, 0.1 * height)
 	helpButton = addTextureSpriteForSize(createTextureForImageResource("helpbutton"), 0.25 * width, 0.1 * height)
-	playButton.move(0.2 * width, 0.5 * height)
-	helpButton.move(0.2 * width, 0.65 * height)
+	foodButton.move(0.1 * width, 0.5 * height)
+	hitButton.move(0.1 * width, 0.65 * height)
+	helpButton.move(0.1 * width, 0.8 * height)
 }
 
-func startGame
+func foodGame
 {
-	pushScene(new GameScene())
+	pushScene(new FoodScene())
 }
+
+// func hitGame
+// {
+// 	pushScene(new HitScene())
+// }
 
 func onPointerEvent(event as PointerEvent) override
 {
@@ -30,9 +38,12 @@ func onPointerEvent(event as PointerEvent) override
 		return
 	}
 	if(event.action == PointerEvent.DOWN) {
-		if(event.isInside(playButton.getX(), playButton.getY(), playButton.getWidth(), playButton.getHeight())) {
-			startGame()
+		if(event.isInside(foodButton.getX(), foodButton.getY(), foodButton.getWidth(), foodButton.getHeight())) {
+			foodGame()
 		}
+		// if(event.isInside(hitButton.getX(), hitButton.getY(), hitButton.getWidth(), hitButton.getHeight())) {
+		// 	hitGame()
+		// }
 	}
 }
 
