@@ -1,0 +1,47 @@
+class is SpriteEntity imports cape imports cave imports motion:
+
+var enemySprite as TextureSprite
+var height as double
+var width as double
+var speed as double
+var eX as double
+var eY as double
+var monster as int
+
+func createSprite override as Sprite
+{
+	var random = new Random()
+	var enemy1 = scene.createTextureForImageResource("dirtybubble")
+	var enemy2 = scene.createTextureForImageResource("plankton")
+	var enemy3 = scene.createTextureForImageResource("manray")
+	height = layer.getReferenceHeight()
+	width = layer.getReferenceWidth()
+	monster = random.nextInt(1, 4)
+	if(monster == 1) {
+		enemySprite = SpriteUtil.addTextureSpriteForSize(scene, layer, enemy1, 0.1 * width, 0.1 * height)
+		speed = 0.01
+	}
+	else if(monster == 2) {
+		enemySprite = SpriteUtil.addTextureSpriteForSize(scene, layer, enemy2, 0.1 * width, 0.2 * height)
+		speed = 0.1
+	}
+	else if(monster == 3) {
+		enemySprite = SpriteUtil.addTextureSpriteForSize(scene, layer, enemy3, 0.1 * width, 0.1 * height)
+		speed = 0.05
+	}
+	enemySprite.move(width, (height - enemySprite.getHeight()) * random.nextDouble())
+	return enemySprite
+}
+
+func tick(gameTime as TimeValue, delta as double) override
+{
+	base.tick(gameTime, delta)
+	eX = enemySprite.getX()
+	eY = enemySprite.getY()
+	enemySprite.move(eX - delta * speed, eY)
+}
+
+func cleanup override
+{
+	layer.removeSprite(enemySprite)
+}

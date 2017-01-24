@@ -6,7 +6,9 @@ var spongeY as double
 var height as double
 var width as double
 var isKeyUp = false
+var isKeyRight = false
 var isKeyDown = false
+var isKeyLeft = false
 
 func createSprite override as Sprite
 {
@@ -14,37 +16,70 @@ func createSprite override as Sprite
 	height = layer.getReferenceHeight()
 	width = layer.getReferenceWidth()
 	spongebobSprite = SpriteUtil.addTextureSpriteForSize(scene, layer, spongebob, 0.1 * width, 0.12 * height)
-	spongebobSprite.move(0.0, 0.9 * height)
-	return spongebobSprite
+	spongebobSprite.move(0.0, height)
+	return(spongebobSprite)
 }
 
 func onKeyEvent(event as KeyEvent)
 {
-	if(event.isKey(KeyEvent.KEY_UP)) {
-		isKeyUp = true
-	}
-	else if(event.isKey(KeyEvent.KEY_DOWN)) {
-		isKeyDown = true
+	var str = event.getStringValue()
+	if(event.getAction() == 1) {
+		if(String.equalsIgnoreCase(str, "w")) {
+			isKeyUp = true
+			PRINT(isKeyUp)
+		}
+		else if(String.equalsIgnoreCase(str, "d")) {
+			isKeyRight = true
+			PRINT(isKeyRight)
+		}
+		else if(String.equalsIgnoreCase(str, "s")) {
+			isKeyDown = true
+			PRINT(isKeyDown)
+		}
+		else if(String.equalsIgnoreCase(str, "a")) {
+			isKeyLeft = true
+			PRINT(isKeyLeft)
+		}
+		else {
+			PRINT("Unhandled key event: `" .. event.getStringValue() .. "'")
+		}
 	}
 	if(event.getAction() == 2) {
 		isKeyUp = false
+		isKeyRight = false
 		isKeyDown = false
-	}
-	else {
-		PRINT("Unhandled key event: `" .. event.getStringValue() .. "'")
+		isKeyLeft = false
 	}
 }
 
 func tick(gameTime as TimeValue, delta as double) override
 {
 	base.tick(gameTime, delta)
-	spongeX = spongebobSprite.getX()
-	spongeY = spongebobSprite.getY()
+	spongeX = sprite.getX()
+	spongeY = sprite.getY()
+	if(spongeX < 0.0) {
+		sprite.move(0.0, spongeY)
+	}
+	if(spongeY < 0.0) {
+		sprite.move(spongeX, 0.0)
+	}
+	if(spongeX >= width - sprite.getWidth()) {
+		sprite.move(width - sprite.getWidth(), spongeY)
+	}
+	if(spongeY >= height - sprite.getHeight()) {
+		sprite.move(spongeX, height - sprite.getHeight())
+	}
 	if(isKeyUp) {
-		spongebobSprite.move(spongeX, spongeY - height * 0.002)
+		sprite.move(spongeX, spongeY - height * 0.005)
+	}
+	if(isKeyRight) {
+		sprite.move(spongeX + width * 0.005 spongeY)
 	}
 	if(isKeyDown) {
-		spongebobSprite.move(spongeX, spongeY + height * 0.002)
+		sprite.move(spongeX, spongeY + height * 0.005)
+	}
+	if(isKeyLeft) {
+		sprite.move(spongeX - width * 0.005, spongeY)
 	}
 }
 
